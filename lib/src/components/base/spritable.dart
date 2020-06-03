@@ -13,16 +13,12 @@ class Spritable{
   Rect spriteRect;
   Paint spritePaint;
   Vector2 position;
-  List<StreamSubscription<dynamic>> listeners = [];
   String spritePath;
 
   Spritable({@required Vector2 initialPosition, Size tileSize, Vector2 pivot, this.spritePath,}){
     _pivot = pivot ?? _pivot;
     _tileSize = tileSize ?? _tileSize;
     position = Vector2(initialPosition.x-(_tileSize.width*_pivot.x),initialPosition.y-(_tileSize.height*_pivot.y));
-    spritePaint = Paint();
-    spritePaint.color = Color(0xff6ab04c);
-    spriteRect = Rect.fromLTWH(position.x,position.y,_tileSize.width,_tileSize.height);
   }
 
   void render(Canvas c) {
@@ -30,7 +26,7 @@ class Spritable{
   }
 
   void destroy(){
-    listeners.forEach((l) {l.cancel();});
+
   }
 
   Size get tileSize => _tileSize;

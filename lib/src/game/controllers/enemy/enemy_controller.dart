@@ -1,15 +1,20 @@
 import 'dart:ui';
 
 import 'package:box2d_flame/box2d.dart';
-import 'package:flameTest/src/components/actors/enemy/enemy.dart';
+import 'package:flameTest/src/components/actors/bullet/bullet.dart';
+import 'file:///C:/Users/LDC/StudioProjects/DartInvaders/lib/src/game/controllers/enemy/enemy.dart';
+import 'package:flameTest/src/game/controllers/base/base_controller.dart';
 import 'package:flameTest/src/game/main_game_controller.dart';
 
-class EnemyController{
+class EnemyController extends BaseController{
   List<Enemy> enemies = [];
   EnemyController(){
-    int qnt = GameController.rand.nextInt(10);
+    int qnt = 15; //GameController.rand.nextInt(10);
+    int row = 3; //GameController.rand.nextInt(5);
     double x = (GameController.screenSize.width - 30) / qnt;
-    List.generate(qnt, (index) => spawnEnemy(Vector2(index*x, 10)));
+    for(int y = 1; y<row+1; y++) {
+      List.generate( qnt, (index) => spawnEnemy(Vector2(15 + x / 2 + index * x, y * 30.0)));
+    }
   }
 
   void render(Canvas canvas) {
@@ -17,10 +22,25 @@ class EnemyController{
   }
 
   void update(double t) {
-    enemies.forEach((Enemy enemy) => enemy.update(t));
+    enemies.forEach((Enemy enemy) {
+      if(enemy.isAlive)
+        enemy.update(t);
+    });
   }
 
   void spawnEnemy(Vector2 pos) {
     enemies.add(Enemy(pos, Size.square(16)));
+  }
+
+  void checkCollision(Bullet bullet) {
+    enemies.forEach((element) {
+      if(element.isAlive) {
+        if (element.wasHit(bullet.spriteRect.center)) {
+          element.die();
+          bullet.destroy();
+          print(element.isAlive);
+        }
+      }
+    });
   }
 }
